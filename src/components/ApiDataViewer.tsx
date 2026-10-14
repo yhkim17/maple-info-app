@@ -1133,7 +1133,7 @@ function GuildBasicVisual({ info }: { info: GuildBasicInfo }) {
 // 주간 보스 결정석 추정 메소 가격 계산 헬퍼 함수
 function getEstimatedWeeklyBossMeso(name: string, difficulty: string): string {
   const diffUpper = difficulty.toUpperCase();
-  const cleanName = name.replace(/(하드|카오스|노멀|이지|익스트림)\s*/g, '').trim();
+  const cleanName = name.replace(/(하드|카오스|노멀|노말|이지|익스트림)\s*/g, '').trim();
 
   const priceMap: Record<string, number> = {
     '자쿰_CHAOS': 9800000,
@@ -1144,32 +1144,41 @@ function getEstimatedWeeklyBossMeso(name: string, difficulty: string): string {
     '반반_CHAOS': 9600000,
     '블러디퀸_CHAOS': 9600000,
     '벨룸_CHAOS': 12500000,
+    '스우_NORMAL': 34000000,
     '스우_HARD': 70000000,
     '스우_EXTREME': 280000000,
+    '데미안_NORMAL': 35000000,
     '데미안_HARD': 73000000,
-    '가디언 엔젤 슬라임_CHAOS': 95000000,
     '가디언 엔젤 슬라임_NORMAL': 45000000,
-    '루시드_HARD': 108000000,
-    '루시드_NORMAL': 50000000,
+    '가디언 엔젤 슬라임_CHAOS': 95000000,
     '루시드_EASY': 38000000,
-    '윌_HARD': 124000000,
-    '윌_NORMAL': 58000000,
+    '루시드_NORMAL': 50000000,
+    '루시드_HARD': 108000000,
     '윌_EASY': 42000000,
-    '더스크_CHAOS': 135000000,
+    '윌_NORMAL': 58000000,
+    '윌_HARD': 124000000,
     '더스크_NORMAL': 62000000,
-    '진 힐라_HARD': 175000000,
+    '더스크_CHAOS': 135000000,
     '진 힐라_NORMAL': 89000000,
-    '듄켈_HARD': 150000000,
+    '진 힐라_HARD': 175000000,
     '듄켈_NORMAL': 71000000,
-    '선택받은 세렌_HARD': 265000000,
+    '듄켈_HARD': 150000000,
     '선택받은 세렌_NORMAL': 135000000,
+    '선택받은 세렌_HARD': 265000000,
+    '선택받은 세렌_EXTREME': 700000000,
     '감시자 칼로스_EASY': 230000000,
     '감시자 칼로스_NORMAL': 350000000,
+    '감시자 칼로스_CHAOS': 650000000,
+    '감시자 칼로스_EXTREME': 1300000000,
     '카링_EASY': 280000000,
     '카링_NORMAL': 420000000,
+    '카링_HARD': 850000000,
+    '카링_EXTREME': 1600000000,
     '최초의 대적자_EASY': 350000000,
     '찬란한 흉성_NORMAL': 180000000,
     '벨로나_EASY': 160000000,
+    '림보_NORMAL': 1000000000,
+    '림보_HARD': 2000000000,
   };
 
   const key = `${cleanName}_${diffUpper}`;
@@ -1183,8 +1192,8 @@ function getEstimatedWeeklyBossMeso(name: string, difficulty: string): string {
 function SchedulerStateVisual({ data }: { data: unknown }) {
   const [viewMode, setViewMode] = useState<'cards' | 'matrix'>('cards');
 
-  const rawData = (data ?? {}) as Record<string, unknown>;
-  const dateStr = (rawData.date as string) || new Date().toISOString().split('T')[0];
+  const rawData = useMemo(() => (data ?? {}) as Record<string, unknown>, [data]);
+  const dateStr = (rawData.date as string) || '';
 
   // N개 캐릭터 파라미터 파싱
   const defaultCharName = (rawData.character_name as string) || 'ColdZone';
@@ -1219,6 +1228,10 @@ function SchedulerStateVisual({ data }: { data: unknown }) {
   const charBossDataList = useMemo(() => {
     const multiResults = (rawData.multiResults as Array<Record<string, unknown>>) || [];
 
+    // 보스명 정규화 헬퍼 (접두 난이도 및 불필요 공백 제거)
+    const normalizeBossName = (rawName: string) =>
+      rawName.replace(/(하드|카오스|노멀|노말|이지|익스트림)\s*/g, '').trim();
+
     return charNamesList.map((charName, charIdx) => {
       const charSpecificData =
         multiResults.find(
@@ -1246,6 +1259,7 @@ function SchedulerStateVisual({ data }: { data: unknown }) {
         difficulty: string;
         rewardMeso: string;
         cleared: boolean;
+        clearedOtherDifficulty?: string;
       }> = [];
 
       if (registeredWeeklyBosses.length > 0) {
@@ -1253,15 +1267,50 @@ function SchedulerStateVisual({ data }: { data: unknown }) {
         bosses = registeredWeeklyBosses.map((b) => {
           const name = (b.content_name || b.name || b.boss_name || '') as string;
           const difficulty = String(b.difficulty || 'normal').toUpperCase();
-          // 3. complete_flag가 true이면 완료, false이면 미완료
-          const isCleared = String(b.complete_flag) === 'true';
-          const rewardMeso = getEstimatedWeeklyBossMeso(name, difficulty);
+
+          // 1) 등록된 난이도 자체의 클리어 여부 확인
+          const isDirectlyCleared = String(b.complete_flag) === 'true';
+
+          // 2) 스케줄러에 등록된 난이도가 아닌 다른 난이도로 클리어한 경우 탐색
+          // (예: 선택받은 세렌 normal 등록 상태이나, hard 난이도의 complete_flag === 'true'인 경우)
+          const normalizedCurrentName = normalizeBossName(name);
+          const clearedAlternative = rawBossWeekly.find((other) => {
+            if (String(other.complete_flag) !== 'true') return false;
+
+            const otherCycle = String(other.cycle || '');
+            const isOtherWeekly =
+              otherCycle === 'bossWeekly' ||
+              (!otherCycle && !String(other.content_name || other.name || '').includes('검은 마법사'));
+            if (!isOtherWeekly) return false;
+
+            const otherName = (other.content_name || other.name || other.boss_name || '') as string;
+            const otherNormalized = normalizeBossName(otherName);
+
+            return (
+              otherName.trim() === name.trim() ||
+              (otherNormalized.length > 0 && otherNormalized === normalizedCurrentName)
+            );
+          });
+
+          // 등록된 난이도로 직접 클리어했거나, 다른 난이도로 클리어한 경우 모두 완료(cleared)로 처리
+          const isCleared = isDirectlyCleared || Boolean(clearedAlternative);
+          const clearedOtherDifficulty =
+            !isDirectlyCleared && clearedAlternative
+              ? String(clearedAlternative.difficulty || '').toUpperCase()
+              : undefined;
+
+          // 보상 메소: 클리어된 경우 실제 처치한 난이도의 결정석 가격 반영, 미클리어인 경우 등록 난이도 가격 반영
+          const effectiveDifficulty = clearedOtherDifficulty || difficulty;
+          const rewardMeso = isCleared
+            ? getEstimatedWeeklyBossMeso(name, effectiveDifficulty)
+            : getEstimatedWeeklyBossMeso(name, difficulty);
 
           return {
             name,
             difficulty,
             rewardMeso,
             cleared: isCleared,
+            clearedOtherDifficulty,
           };
         });
       } else {
@@ -1515,11 +1564,17 @@ function SchedulerStateVisual({ data }: { data: unknown }) {
                             }`}
                           />
                           <div>
-                            <div className="font-semibold text-slate-200 flex items-center gap-1.5">
+                            <div className="font-semibold text-slate-200 flex items-center gap-1.5 flex-wrap">
                               <span>{boss.name}</span>
                               <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700">
                                 {boss.difficulty}
                               </span>
+                              {boss.clearedOtherDifficulty && (
+                                <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold flex items-center gap-0.5">
+                                  <span>✨</span>
+                                  <span>{boss.clearedOtherDifficulty} 클리어</span>
+                                </span>
+                              )}
                             </div>
                             <div className="text-[10px] text-slate-400 font-mono mt-0.5">
                               보상: {boss.rewardMeso} 메소
@@ -1595,10 +1650,17 @@ function SchedulerStateVisual({ data }: { data: unknown }) {
                       return (
                         <td key={c.characterName} className="p-3 text-center">
                           {isCleared ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold">
-                              <span>✓</span>
-                              <span>CLEAR</span>
-                            </span>
+                            <div className="inline-flex flex-col items-center">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold">
+                                <span>✓</span>
+                                <span>CLEAR</span>
+                              </span>
+                              {bossState?.clearedOtherDifficulty && (
+                                <span className="text-[9px] text-emerald-300 font-mono mt-0.5 font-semibold">
+                                  ({bossState.clearedOtherDifficulty})
+                                </span>
+                              )}
+                            </div>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/30 text-[11px]">
                               <span>✕</span>

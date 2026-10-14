@@ -199,10 +199,14 @@ export interface SchedulerContentItem {
   name?: string;
   difficulty?: string;
   type?: string;
+  cycle?: string;
   clear_flag?: boolean | string;
+  complete_flag?: string;
   cleared?: boolean;
+  clearedOtherDifficulty?: string;
   registration_flag?: string;
   rewardMeso?: string;
+  list_order_no?: number;
 }
 
 export interface CharacterSchedulerStateInfo {

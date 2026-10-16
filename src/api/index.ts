@@ -142,12 +142,12 @@ function mockCustomData(
       ocid: params?.ocid,
       date: params?.date,
       bosses: [
-        { name: '하드 루시드', difficulty: 'HARD', rewardMeso: '108,000,000', cleared: false },
-        { name: '하드 윌', difficulty: 'HARD', rewardMeso: '124,000,000', cleared: false },
-        { name: '카오스 더스크', difficulty: 'CHAOS', rewardMeso: '135,000,000', cleared: false },
-        { name: '하드 듄켈', difficulty: 'HARD', rewardMeso: '150,000,000', cleared: false },
-        { name: '하드 진 힐라', difficulty: 'HARD', rewardMeso: '175,000,000', cleared: false },
-        { name: '검은 마법사', difficulty: 'HARD', rewardMeso: '500,000,000', cleared: false },
+        { name: '하드 루시드', difficulty: 'HARD', rewardMeso: '59,700,000', cleared: false },
+        { name: '하드 윌', difficulty: 'HARD', rewardMeso: '73,200,000', cleared: false },
+        { name: '카오스 더스크', difficulty: 'CHAOS', rewardMeso: '66,300,000', cleared: false },
+        { name: '하드 듄켈', difficulty: 'HARD', rewardMeso: '89,600,000', cleared: false },
+        { name: '하드 진 힐라', difficulty: 'HARD', rewardMeso: '100,000,000', cleared: false },
+        { name: '검은 마법사', difficulty: 'HARD', rewardMeso: '465,000,000', cleared: false },
       ],
     };
   }

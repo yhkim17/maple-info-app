@@ -1130,55 +1130,81 @@ function GuildBasicVisual({ info }: { info: GuildBasicInfo }) {
   );
 }
 
-// 주간 보스 결정석 추정 메소 가격 계산 헬퍼 함수
+// 보스 결정석 추정 메소 가격 계산 헬퍼 함수
 function getEstimatedWeeklyBossMeso(name: string, difficulty: string): string {
-  const diffUpper = difficulty.toUpperCase();
-  const cleanName = name.replace(/(하드|카오스|노멀|노말|이지|익스트림)\s*/g, '').trim();
+  let diffUpper = (difficulty || '').toUpperCase().trim();
+  if (diffUpper === '이지' || diffUpper === 'EASY') diffUpper = 'EASY';
+  else if (diffUpper === '노멀' || diffUpper === '노말' || diffUpper === 'NORMAL') diffUpper = 'NORMAL';
+  else if (diffUpper === '하드' || diffUpper === 'HARD') diffUpper = 'HARD';
+  else if (diffUpper === '카오스' || diffUpper === 'CHAOS') diffUpper = 'CHAOS';
+  else if (diffUpper === '익스트림' || diffUpper === 'EXTREME') diffUpper = 'EXTREME';
+
+  const cleanName = name
+    .replace(/\[.*?\]/g, '')
+    .replace(/(하드|카오스|노멀|노말|이지|익스트림)\s*/g, '')
+    .trim();
 
   const priceMap: Record<string, number> = {
-    '자쿰_CHAOS': 9800000,
-    '매그너스_HARD': 11500000,
+    // 주간 보스
+    '자쿰_CHAOS': 4040000,
+    '블러디퀸_CHAOS': 4070000,
+    '반반_CHAOS': 4070000,
+    '피에르_CHAOS': 4080000,
+    '매그너스_HARD': 4280000,
+    '벨룸_CHAOS': 4640000,
+    '파풀라투스_CHAOS': 6550000,
     '힐라_HARD': 6800000,
-    '파풀라투스_CHAOS': 26700000,
-    '피에르_CHAOS': 9600000,
-    '반반_CHAOS': 9600000,
-    '블러디퀸_CHAOS': 9600000,
-    '벨룸_CHAOS': 12500000,
-    '스우_NORMAL': 34000000,
-    '스우_HARD': 70000000,
-    '스우_EXTREME': 280000000,
-    '데미안_NORMAL': 35000000,
-    '데미안_HARD': 73000000,
-    '가디언 엔젤 슬라임_NORMAL': 45000000,
-    '가디언 엔젤 슬라임_CHAOS': 95000000,
-    '루시드_EASY': 38000000,
-    '루시드_NORMAL': 50000000,
-    '루시드_HARD': 108000000,
-    '윌_EASY': 42000000,
-    '윌_NORMAL': 58000000,
-    '윌_HARD': 124000000,
-    '더스크_NORMAL': 62000000,
-    '더스크_CHAOS': 135000000,
-    '진 힐라_NORMAL': 89000000,
-    '진 힐라_HARD': 175000000,
-    '듄켈_NORMAL': 71000000,
-    '듄켈_HARD': 150000000,
-    '선택받은 세렌_NORMAL': 135000000,
-    '선택받은 세렌_HARD': 265000000,
-    '선택받은 세렌_EXTREME': 700000000,
-    '감시자 칼로스_EASY': 230000000,
-    '감시자 칼로스_NORMAL': 350000000,
-    '감시자 칼로스_CHAOS': 650000000,
-    '감시자 칼로스_EXTREME': 1300000000,
-    '카링_EASY': 280000000,
-    '카링_NORMAL': 420000000,
-    '카링_HARD': 850000000,
-    '카링_EXTREME': 1600000000,
-    '최초의 대적자_EASY': 350000000,
-    '찬란한 흉성_NORMAL': 180000000,
-    '벨로나_EASY': 160000000,
-    '림보_NORMAL': 1000000000,
-    '림보_HARD': 2000000000,
+    '스우_NORMAL': 8350000,
+    '데미안_NORMAL': 8750000,
+    '가디언 엔젤 슬라임_NORMAL': 12700000,
+    '루시드_EASY': 14900000,
+    '윌_EASY': 16100000,
+    '루시드_NORMAL': 17800000,
+    '윌_NORMAL': 20500000,
+    '더스크_NORMAL': 22000000,
+    '듄켈_NORMAL': 23700000,
+    '데미안_HARD': 46400000,
+    '스우_HARD': 48900000,
+    '루시드_HARD': 59700000,
+    '더스크_CHAOS': 66300000,
+    '진 힐라_NORMAL': 67600000,
+    '가디언 엔젤 슬라임_CHAOS': 71300000,
+    '윌_HARD': 73200000,
+    '듄켈_HARD': 89600000,
+    '진 힐라_HARD': 100000000,
+    '선택받은 세렌_NORMAL': 167000000,
+    '감시자 칼로스_EASY': 238000000,
+    '최초의 대적자_EASY': 261000000,
+    '선택받은 세렌_HARD': 302000000,
+    '카링_EASY': 320000000,
+    '벨로나_EASY': 396000000,
+    '감시자 칼로스_NORMAL': 479000000,
+    '최초의 대적자_NORMAL': 532000000,
+    '스우_EXTREME': 545000000,
+    '찬란한 흉성_NORMAL': 576000000,
+    '카링_NORMAL': 593000000,
+    '벨로나_NORMAL': 824000000,
+    '림보_NORMAL': 995000000,
+    '감시자 칼로스_CHAOS': 1230000000,
+    '발드릭스_NORMAL': 1320000000,
+    '최초의 대적자_HARD': 1390000000,
+    '유피테르_NORMAL': 1560000000,
+    '카링_HARD': 1560000000,
+    '선택받은 세렌_EXTREME': 1840000000,
+    '림보_HARD': 2385000000,
+    '찬란한 흉성_HARD': 2678000000,
+    '벨로나_HARD': 2950000000,
+    '발드릭스_HARD': 3078000000,
+    '감시자 칼로스_EXTREME': 4104000000,
+    '최초의 대적자_EXTREME': 4712000000,
+    '카링_EXTREME': 4845000000,
+    '유피테르_HARD': 5387000000,
+    '림보_EXTREME': 7500000000,
+    '발드릭스_EXTREME': 9600000000,
+
+    // 월간 보스
+    '검은 마법사_HARD': 465000000,
+    '검은 마법사_EXTREME': 5680000000,
   };
 
   const key = `${cleanName}_${diffUpper}`;
@@ -1214,12 +1240,12 @@ function SchedulerStateVisual({ data }: { data: unknown }) {
   // 기본 주간 보스 목록 템플릿 (폴백용)
   const defaultBossTemplates = useMemo(
     () => [
-      { name: '하드 루시드', difficulty: 'HARD', rewardMeso: '108,000,000' },
-      { name: '하드 윌', difficulty: 'HARD', rewardMeso: '124,000,000' },
-      { name: '카오스 더스크', difficulty: 'CHAOS', rewardMeso: '135,000,000' },
-      { name: '하드 듄켈', difficulty: 'HARD', rewardMeso: '150,000,000' },
-      { name: '하드 진 힐라', difficulty: 'HARD', rewardMeso: '175,000,000' },
-      { name: '검은 마법사', difficulty: 'HARD', rewardMeso: '500,000,000' },
+      { name: '하드 루시드', difficulty: 'HARD', rewardMeso: getEstimatedWeeklyBossMeso('루시드', 'HARD') },
+      { name: '하드 윌', difficulty: 'HARD', rewardMeso: getEstimatedWeeklyBossMeso('윌', 'HARD') },
+      { name: '카오스 더스크', difficulty: 'CHAOS', rewardMeso: getEstimatedWeeklyBossMeso('더스크', 'CHAOS') },
+      { name: '하드 듄켈', difficulty: 'HARD', rewardMeso: getEstimatedWeeklyBossMeso('듄켈', 'HARD') },
+      { name: '하드 진 힐라', difficulty: 'HARD', rewardMeso: getEstimatedWeeklyBossMeso('진 힐라', 'HARD') },
+      { name: '검은 마법사', difficulty: 'HARD', rewardMeso: getEstimatedWeeklyBossMeso('검은 마법사', 'HARD') },
     ],
     []
   );

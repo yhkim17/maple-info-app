@@ -45,6 +45,7 @@ export interface ItemEquipment {
   item_add_option?: Record<string, string | number>;
   item_etc_option?: Record<string, string | number>;
   item_starforce_option?: Record<string, string | number>;
+  item_exceptional_option?: Record<string, string | number>;
   potential_option_grade: string | null;
   potential_option_1: string | null;
   potential_option_2: string | null;

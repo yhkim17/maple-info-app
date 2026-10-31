@@ -512,37 +512,115 @@ function ItemEquipmentVisual({ info }: { info: CharacterItemEquipmentInfo }) {
 }
 
 /**
- * 인게임 메이플스토리 아이템 툴팁 양식 카드 모달
+ * 인게임 메이플스토리 / maple.gg 양식 장비 툴팁 모달
  */
+interface StatDef {
+  key: string;
+  label: string;
+  isPercent?: boolean;
+}
+
+const STAT_ORDER: StatDef[] = [
+  { key: 'str', label: 'STR' },
+  { key: 'dex', label: 'DEX' },
+  { key: 'int', label: 'INT' },
+  { key: 'luk', label: 'LUK' },
+  { key: 'all_stat', label: '올스탯', isPercent: true },
+  { key: 'max_hp', label: '최대 HP' },
+  { key: 'max_mp', label: '최대 MP' },
+  { key: 'attack_power', label: '공격력' },
+  { key: 'magic_power', label: '마력' },
+  { key: 'boss_damage', label: '보스 몬스터 공격 시 데미지', isPercent: true },
+  { key: 'damage', label: '데미지', isPercent: true },
+  { key: 'ignore_monster_armor', label: '몬스터 방어율 무시', isPercent: true },
+  { key: 'speed', label: '이동속도' },
+  { key: 'jump', label: '점프력' },
+];
+
 function ItemTooltipModal({ item, onClose }: { item: ItemEquipment; onClose: () => void }) {
   const potGrade = item.potential_option_grade;
   const addPotGrade = item.additional_potential_option_grade;
 
-  const getGradeBadge = (grade: string | null) => {
-    if (!grade) return null;
-    let letter = 'R';
-    let colorClass = 'bg-sky-400 text-slate-950 font-bold';
-    if (grade.includes('레전드리')) {
-      letter = 'L';
-      colorClass = 'bg-emerald-400 text-slate-950 font-bold';
-    } else if (grade.includes('유니크')) {
-      letter = 'U';
-      colorClass = 'bg-amber-400 text-slate-950 font-bold';
-    } else if (grade.includes('에픽')) {
-      letter = 'E';
-      colorClass = 'bg-purple-400 text-white font-bold';
-    } else if (grade.includes('레어')) {
-      letter = 'R';
-      colorClass = 'bg-sky-400 text-slate-950 font-bold';
-    }
-    return (
-      <span className={`w-4 h-4 rounded-xs flex items-center justify-center text-[10px] leading-none ${colorClass}`}>
-        {letter}
-      </span>
-    );
+  // 스타포스 수치
+  const starforceCount = Math.max(0, parseInt(item.starforce || '0', 10) || 0);
+  const hasStarforce =
+    starforceCount > 0 ||
+    item.starforce_scroll_flag === '사용' ||
+    Boolean(item.item_starforce_option && Object.keys(item.item_starforce_option).length > 0);
+
+  // 주문서 업그레이드 횟수
+  const scrollUpgrade = parseInt(item.scroll_upgrade || '0', 10) || 0;
+
+  // 옵션 숫자 파싱
+  const getStatNum = (dict: Record<string, string | number> | undefined, key: string): number => {
+    if (!dict) return 0;
+    const raw = dict[key];
+    if (raw === undefined || raw === null || raw === '') return 0;
+    const n = parseInt(String(raw).replace(/[^0-9-]/g, ''), 10);
+    return isNaN(n) ? 0 : n;
   };
 
-  const totalOptions = item.item_total_option ? Object.entries(item.item_total_option) : [];
+  // 잠재 등급 테마
+  const getGradeTheme = (grade: string | null) => {
+    if (!grade) return null;
+    if (grade.includes('레전드리')) {
+      return { letter: 'L', badgeBg: 'bg-emerald-500', textColor: 'text-emerald-400' };
+    }
+    if (grade.includes('유니크')) {
+      return { letter: 'U', badgeBg: 'bg-amber-500', textColor: 'text-amber-400' };
+    }
+    if (grade.includes('에픽')) {
+      return { letter: 'E', badgeBg: 'bg-purple-600', textColor: 'text-purple-400' };
+    }
+    if (grade.includes('레어')) {
+      return { letter: 'R', badgeBg: 'bg-sky-500', textColor: 'text-sky-400' };
+    }
+    return { letter: '?', badgeBg: 'bg-slate-600', textColor: 'text-slate-300' };
+  };
+
+  const potTheme = getGradeTheme(potGrade);
+  const addPotTheme = getGradeTheme(addPotGrade);
+
+  // 스타포스 별 렌더링 (15개씩 2줄 = 총 30개 별 슬롯, 5개씩 묶음)
+  const renderStarRows = () => {
+    const rows = [
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+      [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+    ];
+
+    return (
+      <div className="flex flex-col items-center gap-1 mb-2">
+        {rows.map((row, rowIdx) => (
+          <div key={rowIdx} className="flex items-center gap-2">
+            {[0, 1, 2].map((group) => (
+              <div key={group} className="flex items-center gap-0.5">
+                {row.slice(group * 5, group * 5 + 5).map((starIdx) => {
+                  const isFilled = starIdx < starforceCount;
+                  return isFilled ? (
+                    <svg
+                      key={starIdx}
+                      className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ) : (
+                    <svg
+                      key={starIdx}
+                      className="w-3.5 h-3.5 fill-none stroke-slate-500 stroke-[1.8] shrink-0"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div
@@ -550,27 +628,58 @@ function ItemTooltipModal({ item, onClose }: { item: ItemEquipment; onClose: () 
       onClick={onClose}
     >
       <div
-        className="relative bg-slate-900 border-2 border-slate-700 rounded-2xl w-full max-w-sm p-5 shadow-2xl text-slate-100 space-y-3 font-sans animate-in fade-in zoom-in-95 duration-150"
+        className="relative bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-[340px] p-4.5 shadow-2xl text-slate-100 space-y-2.5 font-sans animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto scrollbar-thin"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* 닫기 버튼 */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute top-3 right-3 text-slate-400 hover:text-white text-lg w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-800 transition-colors cursor-pointer"
-        >
-          ✕
-        </button>
+        {/* 상단 툴바: 즐겨찾기 별 & 우측 계산기 + 닫기 */}
+        <div className="flex items-center justify-between">
+          <button
+            type="button"
+            className="text-slate-400 hover:text-amber-400 transition-colors p-1 cursor-pointer"
+            title="즐겨찾기"
+          >
+            <svg className="w-4 h-4 fill-none stroke-currentColor stroke-2" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+          </button>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              className="text-slate-400 hover:text-white transition-colors p-1 cursor-pointer"
+              title="계산기"
+            >
+              <svg className="w-4 h-4 fill-none stroke-currentColor stroke-2" viewBox="0 0 24 24">
+                <rect x="4" y="2" width="16" height="20" rx="2" />
+                <line x1="8" y1="6" x2="16" y2="6" />
+                <line x1="8" y1="10" x2="8.01" y2="10" />
+                <line x1="12" y1="10" x2="12.01" y2="10" />
+                <line x1="16" y1="10" x2="16.01" y2="10" />
+                <line x1="8" y1="14" x2="8.01" y2="14" />
+                <line x1="12" y1="14" x2="12.01" y2="14" />
+                <line x1="16" y1="14" x2="16.01" y2="14" />
+                <line x1="8" y1="18" x2="8.01" y2="18" />
+                <line x1="12" y1="18" x2="12.01" y2="18" />
+                <line x1="16" y1="18" x2="16.01" y2="18" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-slate-400 hover:text-white text-base leading-none p-1 cursor-pointer hover:bg-slate-800 rounded-sm transition-colors"
+              title="닫기"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
 
         {/* 상단 스타포스 & 명칭 */}
-        <div className="text-center space-y-1 pt-1">
-          {parseInt(item.starforce || '0', 10) > 0 && (
-            <div className="text-xs font-extrabold text-amber-400 font-mono tracking-wider">
-              ★ {item.starforce}성
-            </div>
-          )}
+        <div className="text-center space-y-1">
+          {hasStarforce && renderStarRows()}
           <h4 className="text-base font-extrabold text-white leading-tight">
             {item.item_name}
+            {scrollUpgrade > 0 && <span className="text-white"> (+{scrollUpgrade})</span>}
           </h4>
           <p className="text-xs text-slate-400 font-medium">
             ({item.potential_option_grade ?? '일반'} 아이템)
@@ -580,11 +689,15 @@ function ItemTooltipModal({ item, onClose }: { item: ItemEquipment; onClose: () 
         {/* 점선 구분선 */}
         <div className="border-b border-dashed border-slate-700/80 my-2" />
 
-        {/* 중앙 아이콘 */}
+        {/* 중앙 아이콘 (화이트 배경 + 연두색 테두리) */}
         <div className="flex justify-center">
-          <div className="w-20 h-20 bg-slate-950 rounded-2xl border-2 border-emerald-400/80 p-2 flex items-center justify-center shadow-inner relative">
+          <div className="w-18 h-18 bg-white rounded-2xl border-2 border-lime-400 p-2 flex items-center justify-center shadow-md relative">
             {item.item_icon ? (
-              <img src={item.item_icon} alt={item.item_name} className="max-h-full object-contain drop-shadow-md" />
+              <img
+                src={item.item_icon}
+                alt={item.item_name}
+                className="max-h-full max-w-full object-contain drop-shadow-sm"
+              />
             ) : (
               <span className="text-3xl">🛡️</span>
             )}
@@ -595,26 +708,69 @@ function ItemTooltipModal({ item, onClose }: { item: ItemEquipment; onClose: () 
         <div className="border-b border-dashed border-slate-700/80 my-2" />
 
         {/* 장비 분류 및 옵션 상세 항목 */}
-        <div className="space-y-1 text-xs text-slate-200 leading-relaxed font-medium">
-          <div className="text-slate-300 font-semibold mb-1">
-            장비분류 : <span className="text-white">{item.item_equipment_part}</span>
+        <div className="space-y-1 text-xs font-bold leading-relaxed">
+          <div className="text-white">
+            장비분류 : <span>{item.item_equipment_part}</span>
           </div>
 
-          {totalOptions.map(([key, val]) => {
-            if (val === undefined || val === null || val === '0' || val === 0) return null;
+          {STAT_ORDER.map(({ key, label, isPercent }) => {
+            const total = getStatNum(item.item_total_option, key);
+            if (total <= 0) return null;
+
+            const base = getStatNum(item.item_base_option, key);
+            const add = getStatNum(item.item_add_option, key);
+            const etc = getStatNum(item.item_etc_option, key);
+            const starforce = getStatNum(item.item_starforce_option, key);
+            const exceptional = getStatNum(item.item_exceptional_option, key);
+
+            const isEnhanced = add > 0 || etc > 0 || starforce > 0 || exceptional > 0;
+            const unit = isPercent ? '%' : '';
+
             return (
-              <div key={key} className="flex justify-between py-0.5">
-                <span className="text-slate-300">{key} :</span>
-                <span className="font-bold text-white">
-                  {typeof val === 'number' && val > 0 ? `+${val}` : val}
-                </span>
+              <div key={key}>
+                {isEnhanced ? (
+                  <div className="flex flex-wrap items-baseline gap-1">
+                    <span className="text-cyan-400">
+                      {label} : +{total}{unit}
+                    </span>
+                    <span className="text-white">(</span>
+                    <span className="text-white">
+                      {base}{unit}
+                    </span>
+                    {add > 0 && (
+                      <span className="text-[#a3e635]">
+                        +{add}{unit}
+                      </span>
+                    )}
+                    {etc > 0 && (
+                      <span className="text-[#a5b4fc]">
+                        +{etc}{unit}
+                      </span>
+                    )}
+                    {starforce > 0 && (
+                      <span className="text-[#facc15]">
+                        +{starforce}{unit}
+                      </span>
+                    )}
+                    {exceptional > 0 && (
+                      <span className="text-rose-400">
+                        +{exceptional}{unit}
+                      </span>
+                    )}
+                    <span className="text-white">)</span>
+                  </div>
+                ) : (
+                  <div className="text-white">
+                    {label} : +{total}{unit}
+                  </div>
+                )}
               </div>
             );
           })}
 
           {/* 가위 사용 가능 횟수 */}
           {item.cuttable_count && item.cuttable_count !== '255' && (
-            <div className="text-amber-400 font-bold pt-1">
+            <div className="text-amber-400 pt-0.5">
               가위 사용 가능 횟수 : {item.cuttable_count} 회
             </div>
           )}
@@ -625,11 +781,17 @@ function ItemTooltipModal({ item, onClose }: { item: ItemEquipment; onClose: () 
           <>
             <div className="border-b border-dashed border-slate-700/80 my-2" />
             <div className="space-y-1.5 text-xs">
-              <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-                {getGradeBadge(potGrade)}
+              <div className={`flex items-center gap-1.5 ${potTheme?.textColor ?? 'text-emerald-400'} font-bold`}>
+                {potTheme && (
+                  <span
+                    className={`w-4 h-4 rounded-xs flex items-center justify-center text-[10px] leading-none text-white font-bold ${potTheme.badgeBg}`}
+                  >
+                    {potTheme.letter}
+                  </span>
+                )}
                 <span>잠재옵션</span>
               </div>
-              <div className="space-y-0.5 text-slate-200 text-[11px] pl-1 font-medium">
+              <div className="space-y-0.5 text-white font-bold text-xs pl-0.5">
                 {item.potential_option_1 && <div>{item.potential_option_1}</div>}
                 {item.potential_option_2 && <div>{item.potential_option_2}</div>}
                 {item.potential_option_3 && <div>{item.potential_option_3}</div>}
@@ -645,11 +807,17 @@ function ItemTooltipModal({ item, onClose }: { item: ItemEquipment; onClose: () 
           <>
             <div className="border-b border-dashed border-slate-700/80 my-2" />
             <div className="space-y-1.5 text-xs">
-              <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-                {getGradeBadge(addPotGrade)}
+              <div className={`flex items-center gap-1.5 ${addPotTheme?.textColor ?? 'text-purple-400'} font-bold`}>
+                {addPotTheme && (
+                  <span
+                    className={`w-4 h-4 rounded-xs flex items-center justify-center text-[10px] leading-none text-white font-bold ${addPotTheme.badgeBg}`}
+                  >
+                    {addPotTheme.letter}
+                  </span>
+                )}
                 <span>에디셔널 잠재옵션</span>
               </div>
-              <div className="space-y-0.5 text-slate-200 text-[11px] pl-1 font-medium">
+              <div className="space-y-0.5 text-white font-bold text-xs pl-0.5">
                 {item.additional_potential_option_1 && <div>{item.additional_potential_option_1}</div>}
                 {item.additional_potential_option_2 && <div>{item.additional_potential_option_2}</div>}
                 {item.additional_potential_option_3 && <div>{item.additional_potential_option_3}</div>}
@@ -662,9 +830,11 @@ function ItemTooltipModal({ item, onClose }: { item: ItemEquipment; onClose: () 
         {item.soul_name && (
           <>
             <div className="border-b border-dashed border-slate-700/80 my-2" />
-            <div className="text-xs text-amber-300 space-y-0.5">
-              <div className="font-bold">[{item.soul_name}]</div>
-              {item.soul_option && <div className="text-[11px] text-slate-300">{item.soul_option}</div>}
+            <div className="text-xs space-y-1">
+              <div className="font-bold text-amber-300">[{item.soul_name}]</div>
+              {item.soul_option && (
+                <div className="text-white font-bold text-xs pl-0.5">{item.soul_option}</div>
+              )}
             </div>
           </>
         )}

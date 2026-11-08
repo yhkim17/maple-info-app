@@ -225,7 +225,12 @@ function VisualApiRenderer({ endpoint, data }: { endpoint: string; data: unknown
     return <SymbolVisual info={data as CharacterSymbolInfo} />;
   }
   if (endpoint === 'character/hyper-stat') {
-    return <HyperStatVisual info={data as CharacterHyperStatInfo} />;
+    return (
+      <HyperStatVisual
+        key={`${(data as CharacterHyperStatInfo)?.date}-${(data as CharacterHyperStatInfo)?.character_class}-${(data as CharacterHyperStatInfo)?.use_preset_no}`}
+        info={data as CharacterHyperStatInfo}
+      />
+    );
   }
   if (endpoint === 'character/link-skill') {
     return <LinkSkillVisual info={data as CharacterLinkSkillInfo} />;
@@ -1159,27 +1164,109 @@ function SymbolVisual({ info }: { info: CharacterSymbolInfo }) {
 
 // 11. 하이퍼스탯 뷰
 function HyperStatVisual({ info }: { info: CharacterHyperStatInfo }) {
+  // 기본 프리셋은 현재 인게임에 설정된 프리셋(use_preset_no)으로 초기화
+  const [selectedPreset, setSelectedPreset] = useState<string>(() => info?.use_preset_no || '1');
+
+  const presetList = ['1', '2', '3'] as const;
+
+  // 선택된 프리셋의 스탯 목록
+  const currentList = useMemo(() => {
+    if (!info) return [];
+    const activePresetKey = `hyper_stat_preset_${selectedPreset}` as keyof CharacterHyperStatInfo;
+    return (info[activePresetKey] as HyperStatPreset[]) ?? [];
+  }, [info, selectedPreset]);
+
+  // 투자된(레벨 1 이상) 스탯 필터링
+  const activeStats = useMemo(() => {
+    return currentList.filter((item) => item.stat_level > 0);
+  }, [currentList]);
+
   if (!info || !info.hyper_stat_preset_1) {
     return <GenericDataVisual data={info} />;
   }
 
-  const activePresetKey = `hyper_stat_preset_${info.use_preset_no}` as keyof CharacterHyperStatInfo;
-  const currentList = (info[activePresetKey] as HyperStatPreset[]) ?? info.hyper_stat_preset_1;
+  // 선택된 프리셋의 잔여 포인트
+  const remainPointKey = `hyper_stat_preset_${selectedPreset}_remain_point` as keyof CharacterHyperStatInfo;
+  const currentRemainPoint = info[remainPointKey] as number | undefined;
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs">
-        <span className="text-slate-400">현재 사용 중인 하이퍼스탯 프리셋</span>
-        <span className="font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/30">
-          프리셋 {info.use_preset_no}번
-        </span>
+      {/* 프리셋 선택 탭 및 상태 요약 영역 */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+        <div>
+          <div className="text-[11px] text-slate-400 font-medium mb-1.5">하이퍼스탯 프리셋 선택</div>
+          <div className="flex flex-wrap items-center gap-2">
+            {presetList.map((presetNo) => {
+              const isSelected = selectedPreset === presetNo;
+              const isCurrentApplied = info.use_preset_no === presetNo;
+
+              return (
+                <button
+                  key={presetNo}
+                  type="button"
+                  onClick={() => setSelectedPreset(presetNo)}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold shadow-md shadow-amber-500/20'
+                      : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <span>프리셋 {presetNo}</span>
+                  {isCurrentApplied && (
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                        isSelected
+                          ? 'bg-slate-950 text-amber-300 border border-amber-300/30'
+                          : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                      }`}
+                    >
+                      현재 적용
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 프리셋 메타 정보 요약 */}
+        <div className="flex flex-wrap items-center gap-2 sm:self-end text-xs">
+          <div className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300 flex items-center gap-1.5">
+            <span className="text-slate-500">인게임 적용:</span>
+            <span className="font-bold text-amber-400 font-mono">프리셋 {info.use_preset_no}번</span>
+          </div>
+          {currentRemainPoint !== undefined && (
+            <div className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300 flex items-center gap-1.5">
+              <span className="text-slate-500">프리셋 {selectedPreset} 잔여:</span>
+              <span className="font-mono font-semibold text-emerald-400">{currentRemainPoint.toLocaleString()} pt</span>
+            </div>
+          )}
+          {info.use_available_hyper_stat !== undefined && currentRemainPoint === undefined && (
+            <div className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300 flex items-center gap-1.5">
+              <span className="text-slate-500">가용 포인트:</span>
+              <span className="font-mono font-semibold text-emerald-400">{info.use_available_hyper_stat.toLocaleString()} pt</span>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[450px] overflow-y-auto pr-1 scrollbar-thin">
-        {currentList
-          .filter((item) => item.stat_level > 0)
-          .map((item) => (
-            <div key={item.stat_type} className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs flex items-center justify-between gap-3">
+      {/* 선택된 프리셋의 스탯 정보 목록 */}
+      {activeStats.length === 0 ? (
+        <div className="bg-slate-950 p-10 rounded-xl border border-slate-800 text-center space-y-1">
+          <p className="text-sm font-semibold text-slate-300">
+            프리셋 {selectedPreset}번에 투자된 하이퍼스탯이 없습니다.
+          </p>
+          <p className="text-xs text-slate-500">
+            인게임에서 포인트를 배분한 뒤 다시 조회하거나 다른 프리셋을 선택해 보세요.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[450px] overflow-y-auto pr-1 scrollbar-thin">
+          {activeStats.map((item) => (
+            <div
+              key={item.stat_type}
+              className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs flex items-center justify-between gap-3 hover:border-slate-700/80 transition-colors"
+            >
               <div>
                 <span className="font-semibold text-slate-200 block">{item.stat_type}</span>
                 {item.stat_increase && (
@@ -1194,7 +1281,8 @@ function HyperStatVisual({ info }: { info: CharacterHyperStatInfo }) {
               </div>
             </div>
           ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,124 @@
+- generic [ref=e23]:
+  - banner [ref=e24]:
+    - generic [ref=e26]:
+      - generic [ref=e27] [cursor=pointer]:
+        - generic [ref=e28]: 🍁
+        - generic [ref=e29]: 메이플 인포
+      - navigation "메인 메뉴" [ref=e30]:
+        - button "👤 캐릭터 정보 조회" [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: 👤
+          - text: 캐릭터 정보 조회
+        - button "🛡️ 유니온 정보 조회" [ref=e33] [cursor=pointer]:
+          - generic [ref=e34]: 🛡️
+          - text: 유니온 정보 조회
+        - button "🏰 길드 정보 조회" [ref=e35] [cursor=pointer]:
+          - generic [ref=e36]: 🏰
+          - text: 길드 정보 조회
+        - button "⚔️ 연무장 정보 조회" [ref=e37] [cursor=pointer]:
+          - generic [ref=e38]: ⚔️
+          - text: 연무장 정보 조회
+        - button "🎲 확률 정보 조회" [active] [ref=e39] [cursor=pointer]:
+          - generic [ref=e40]: 🎲
+          - text: 확률 정보 조회
+        - button "📅 스케줄러 정보 조회" [ref=e41] [cursor=pointer]:
+          - generic [ref=e42]: 📅
+          - text: 스케줄러 정보 조회
+        - button "🏆 랭킹 정보 조회" [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]: 🏆
+          - text: 랭킹 정보 조회
+        - button "📢 공지 정보 조회" [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]: 📢
+          - text: 공지 정보 조회
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - generic [ref=e49]: "조회 중:"
+          - generic [ref=e50]: ColdZone
+        - button "캐릭터 변경" [ref=e51] [cursor=pointer]
+  - generic [ref=e52]:
+    - complementary [ref=e53]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - generic [ref=e57]: 🎲
+            - heading "확률 정보 조회" [level=3] [ref=e361]
+          - generic [ref=e59]: 3개 API
+        - paragraph [ref=e60]: 잠재능력, 큐브, 스타포스 강화 이력 정보를 조회합니다.
+        - textbox "API 검색 (명칭, endpoint)" [ref=e62]
+      - generic [ref=e63]:
+        - button "잠재능력 재설정 이력 확률 GET /history/potential" [ref=e362] [cursor=pointer]:
+          - generic [ref=e363]:
+            - generic [ref=e364]: 잠재능력 재설정 이력
+            - generic [ref=e365]:
+              - generic [ref=e366]: 확률
+              - generic [ref=e367]: GET
+          - generic [ref=e368]: /history/potential
+        - button "큐브 사용 이력 확률 GET /history/cube" [ref=e369] [cursor=pointer]:
+          - generic [ref=e370]:
+            - generic [ref=e371]: 큐브 사용 이력
+            - generic [ref=e372]:
+              - generic [ref=e373]: 확률
+              - generic [ref=e374]: GET
+          - generic [ref=e375]: /history/cube
+        - button "스타포스 강화 이력 확률 GET /history/starforce" [ref=e376] [cursor=pointer]:
+          - generic [ref=e377]:
+            - generic [ref=e378]: 스타포스 강화 이력
+            - generic [ref=e379]:
+              - generic [ref=e380]: 확률
+              - generic [ref=e381]: GET
+          - generic [ref=e382]: /history/starforce
+      - generic [ref=e190]:
+        - generic [ref=e191]: NEXON Open API v1
+        - generic [ref=e192]: 200 OK
+    - main [ref=e193]:
+      - generic [ref=e194]:
+        - generic [ref=e195]:
+          - generic [ref=e196]: 🎲 확률 정보 조회
+          - generic [ref=e197]: /
+          - generic [ref=e198]: 잠재능력 재설정 이력
+          - generic [ref=e199]: 확률
+        - generic [ref=e201]:
+          - heading "잠재능력 재설정 이력 GET" [level=2] [ref=e383]:
+            - generic [ref=e203]: 잠재능력 재설정 이력
+            - generic [ref=e204]: GET
+          - paragraph [ref=e205]: 미라클 서큘레이터 등 잠재능력 재설정 이력 및 결과를 조회합니다 (기준일 필수).
+      - generic [ref=e206]:
+        - generic [ref=e207]:
+          - generic [ref=e208]:
+            - generic [ref=e209]:
+              - generic [ref=e210]: GET
+              - generic [ref=e211]: /maplestory/v1/
+              - generic [ref=e212]: history/potential
+            - generic [ref=e213]: x-nxopen-api-key 연동
+          - generic [ref=e214]:
+            - generic [ref=e342]:
+              - generic [ref=e343]: "기준일(date):"
+              - textbox [ref=e344]:
+                - /placeholder: YYYY-MM-DD
+              - generic [ref=e345]: 오늘 디폴트 적용
+            - button "🚀 API 호출 / 새로고침" [ref=e219] [cursor=pointer]:
+              - generic [ref=e220]: 🚀
+              - generic [ref=e221]: API 호출 / 새로고침
+        - generic [ref=e222]:
+          - generic [ref=e223]:
+            - generic [ref=e224]:
+              - button "🎨 시각화 뷰 (Visual)" [ref=e384] [cursor=pointer]
+              - 'button "{} JSON 원본 (Raw)" [ref=e385] [cursor=pointer]'
+            - generic [ref=e227]:
+              - button "📋 JSON 복사" [ref=e386] [cursor=pointer]
+              - button "🔄" [ref=e388] [cursor=pointer]
+          - generic [ref=e390]:
+            - generic [ref=e391]:
+              - generic [ref=e392]: count
+              - text: "0"
+            - generic [ref=e393]:
+              - generic [ref=e394]: next_cursor
+              - text: "-"
+            - generic [ref=e395]:
+              - generic [ref=e396]: potential_history
+              - generic [ref=e397]: "[]"
+            - generic [ref=e398]:
+              - generic [ref=e399]: queryParams
+              - generic [ref=e400]: "{ \"count\": 100, \"date\": \"2026-11-13\" }"
+            - generic [ref=e401]:
+              - generic [ref=e402]: character_names
+              - text: "-"

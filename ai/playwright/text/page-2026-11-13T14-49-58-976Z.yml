@@ -1,0 +1,113 @@
+- generic [ref=e23]:
+  - banner [ref=e24]:
+    - generic [ref=e26]:
+      - generic [ref=e27] [cursor=pointer]:
+        - generic [ref=e28]: 🍁
+        - generic [ref=e29]: 메이플 인포
+      - navigation "메인 메뉴" [ref=e30]:
+        - button "👤 캐릭터 정보 조회" [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: 👤
+          - text: 캐릭터 정보 조회
+        - button "🛡️ 유니온 정보 조회" [active] [ref=e33] [cursor=pointer]:
+          - generic [ref=e34]: 🛡️
+          - text: 유니온 정보 조회
+        - button "🏰 길드 정보 조회" [ref=e35] [cursor=pointer]:
+          - generic [ref=e36]: 🏰
+          - text: 길드 정보 조회
+        - button "⚔️ 연무장 정보 조회" [ref=e37] [cursor=pointer]:
+          - generic [ref=e38]: ⚔️
+          - text: 연무장 정보 조회
+        - button "🎲 확률 정보 조회" [ref=e39] [cursor=pointer]:
+          - generic [ref=e40]: 🎲
+          - text: 확률 정보 조회
+        - button "📅 스케줄러 정보 조회" [ref=e41] [cursor=pointer]:
+          - generic [ref=e42]: 📅
+          - text: 스케줄러 정보 조회
+        - button "🏆 랭킹 정보 조회" [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]: 🏆
+          - text: 랭킹 정보 조회
+        - button "📢 공지 정보 조회" [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]: 📢
+          - text: 공지 정보 조회
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - generic [ref=e49]: "조회 중:"
+          - generic [ref=e50]: ColdZone
+        - button "캐릭터 변경" [ref=e51] [cursor=pointer]
+  - generic [ref=e52]:
+    - complementary [ref=e53]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - generic [ref=e57]: 🛡️
+            - heading "유니온 정보 조회" [level=3] [ref=e256]
+          - generic [ref=e59]: 3개 API
+        - paragraph [ref=e60]: 유니온 레벨, 공격대원 배치, 아티팩트 정보를 조회합니다.
+        - textbox "API 검색 (명칭, endpoint)" [ref=e62]
+      - generic [ref=e63]:
+        - button "유니온 기본 정보 유니온 GET /user/union" [ref=e257] [cursor=pointer]:
+          - generic [ref=e258]:
+            - generic [ref=e259]: 유니온 기본 정보
+            - generic [ref=e260]:
+              - generic [ref=e261]: 유니온
+              - generic [ref=e262]: GET
+          - generic [ref=e263]: /user/union
+        - button "유니온 공격대원 배치 유니온 GET /user/union-raider" [ref=e264] [cursor=pointer]:
+          - generic [ref=e265]:
+            - generic [ref=e266]: 유니온 공격대원 배치
+            - generic [ref=e267]:
+              - generic [ref=e268]: 유니온
+              - generic [ref=e269]: GET
+          - generic [ref=e270]: /user/union-raider
+        - button "유니온 아티팩트 유니온 GET /user/union-artifact" [ref=e271] [cursor=pointer]:
+          - generic [ref=e272]:
+            - generic [ref=e273]: 유니온 아티팩트
+            - generic [ref=e274]:
+              - generic [ref=e275]: 유니온
+              - generic [ref=e276]: GET
+          - generic [ref=e277]: /user/union-artifact
+      - generic [ref=e190]:
+        - generic [ref=e191]: NEXON Open API v1
+        - generic [ref=e192]: 200 OK
+    - main [ref=e193]:
+      - generic [ref=e194]:
+        - generic [ref=e195]:
+          - generic [ref=e196]: 🛡️ 유니온 정보 조회
+          - generic [ref=e197]: /
+          - generic [ref=e198]: 유니온 기본 정보
+          - generic [ref=e199]: 유니온
+        - generic [ref=e201]:
+          - heading "유니온 기본 정보 GET" [level=2] [ref=e278]:
+            - generic [ref=e203]: 유니온 기본 정보
+            - generic [ref=e204]: GET
+          - paragraph [ref=e205]: 유니온 총합 레벨, 유니온 등급(그랜드 마스터 등) 정보를 조회합니다.
+      - generic [ref=e206]:
+        - generic [ref=e207]:
+          - generic [ref=e208]:
+            - generic [ref=e209]:
+              - generic [ref=e210]: GET
+              - generic [ref=e211]: /maplestory/v1/
+              - generic [ref=e212]: user/union
+            - generic [ref=e213]: x-nxopen-api-key 연동
+          - generic [ref=e214]:
+            - generic [ref=e215]:
+              - generic [ref=e216]: "기준일(date):"
+              - textbox [ref=e217]:
+                - /placeholder: YYYY-MM-DD
+              - generic [ref=e218]: 최신 데이터 자동 조회
+            - button "🚀 API 호출 / 새로고침" [ref=e219] [cursor=pointer]:
+              - generic [ref=e220]: 🚀
+              - generic [ref=e221]: API 호출 / 새로고침
+        - generic [ref=e222]:
+          - generic [ref=e223]:
+            - generic [ref=e224]:
+              - button "🎨 시각화 뷰 (Visual)" [ref=e279] [cursor=pointer]
+              - 'button "{} JSON 원본 (Raw)" [ref=e280] [cursor=pointer]'
+            - generic [ref=e227]:
+              - button "📋 JSON 복사" [ref=e281] [cursor=pointer]
+              - button "🔄" [ref=e283] [cursor=pointer]
+          - generic [ref=e285]:
+            - generic [ref=e286]: 🛡️
+            - generic [ref=e287]:
+              - text: 그랜드 마스터 유니온 4
+              - generic [ref=e288]: Lv. 9,926

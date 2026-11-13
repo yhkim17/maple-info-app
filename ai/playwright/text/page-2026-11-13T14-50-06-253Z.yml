@@ -1,0 +1,113 @@
+- generic [ref=e23]:
+  - banner [ref=e24]:
+    - generic [ref=e26]:
+      - generic [ref=e27] [cursor=pointer]:
+        - generic [ref=e28]: 🍁
+        - generic [ref=e29]: 메이플 인포
+      - navigation "메인 메뉴" [ref=e30]:
+        - button "👤 캐릭터 정보 조회" [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: 👤
+          - text: 캐릭터 정보 조회
+        - button "🛡️ 유니온 정보 조회" [ref=e33] [cursor=pointer]:
+          - generic [ref=e34]: 🛡️
+          - text: 유니온 정보 조회
+        - button "🏰 길드 정보 조회" [active] [ref=e35] [cursor=pointer]:
+          - generic [ref=e36]: 🏰
+          - text: 길드 정보 조회
+        - button "⚔️ 연무장 정보 조회" [ref=e37] [cursor=pointer]:
+          - generic [ref=e38]: ⚔️
+          - text: 연무장 정보 조회
+        - button "🎲 확률 정보 조회" [ref=e39] [cursor=pointer]:
+          - generic [ref=e40]: 🎲
+          - text: 확률 정보 조회
+        - button "📅 스케줄러 정보 조회" [ref=e41] [cursor=pointer]:
+          - generic [ref=e42]: 📅
+          - text: 스케줄러 정보 조회
+        - button "🏆 랭킹 정보 조회" [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]: 🏆
+          - text: 랭킹 정보 조회
+        - button "📢 공지 정보 조회" [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]: 📢
+          - text: 공지 정보 조회
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - generic [ref=e49]: "조회 중:"
+          - generic [ref=e50]: ColdZone
+        - button "캐릭터 변경" [ref=e51] [cursor=pointer]
+  - generic [ref=e52]:
+    - complementary [ref=e53]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - generic [ref=e57]: 🏰
+            - heading "길드 정보 조회" [level=3] [ref=e289]
+          - generic [ref=e59]: 2개 API
+        - paragraph [ref=e60]: 길드 식별자 및 기본 정보를 조회합니다.
+        - textbox "API 검색 (명칭, endpoint)" [ref=e62]
+      - generic [ref=e63]:
+        - button "길드 식별자(oguild_id) 조회 길드 GET /guild/id" [ref=e290] [cursor=pointer]:
+          - generic [ref=e291]:
+            - generic [ref=e292]: 길드 식별자(oguild_id) 조회
+            - generic [ref=e293]:
+              - generic [ref=e294]: 길드
+              - generic [ref=e295]: GET
+          - generic [ref=e296]: /guild/id
+        - button "길드 기본 정보 길드 GET /guild/basic" [ref=e297] [cursor=pointer]:
+          - generic [ref=e298]:
+            - generic [ref=e299]: 길드 기본 정보
+            - generic [ref=e300]:
+              - generic [ref=e301]: 길드
+              - generic [ref=e302]: GET
+          - generic [ref=e303]: /guild/basic
+      - generic [ref=e190]:
+        - generic [ref=e191]: NEXON Open API v1
+        - generic [ref=e192]: 200 OK
+    - main [ref=e193]:
+      - generic [ref=e194]:
+        - generic [ref=e195]:
+          - generic [ref=e196]: 🏰 길드 정보 조회
+          - generic [ref=e197]: /
+          - generic [ref=e198]: 길드 식별자(oguild_id) 조회
+          - generic [ref=e199]: 길드
+        - generic [ref=e201]:
+          - heading "길드 식별자(oguild_id) 조회 GET" [level=2] [ref=e304]:
+            - generic [ref=e203]: 길드 식별자(oguild_id) 조회
+            - generic [ref=e204]: GET
+          - paragraph [ref=e205]: 길드 명칭과 월드명을 기준으로 길드 고유 식별자(oguild_id)를 조회합니다.
+      - generic [ref=e206]:
+        - generic [ref=e207]:
+          - generic [ref=e208]:
+            - generic [ref=e209]:
+              - generic [ref=e210]: GET
+              - generic [ref=e211]: /maplestory/v1/
+              - generic [ref=e212]: guild/id
+            - generic [ref=e213]: x-nxopen-api-key 연동
+          - generic [ref=e214]:
+            - generic [ref=e305]:
+              - generic [ref=e306]:
+                - generic [ref=e307]: "길드명:"
+                - textbox [ref=e308]: 메이플
+              - generic [ref=e309]:
+                - generic [ref=e310]: "월드명:"
+                - textbox [ref=e311]: 스카니아
+            - button "🚀 API 호출 / 새로고침" [ref=e219] [cursor=pointer]:
+              - generic [ref=e220]: 🚀
+              - generic [ref=e221]: API 호출 / 새로고침
+        - generic [ref=e222]:
+          - generic [ref=e223]:
+            - generic [ref=e224]:
+              - button "🎨 시각화 뷰 (Visual)" [ref=e312] [cursor=pointer]
+              - 'button "{} JSON 원본 (Raw)" [ref=e313] [cursor=pointer]'
+            - generic [ref=e227]:
+              - button "📋 JSON 복사" [ref=e314] [cursor=pointer]
+              - button "🔄" [ref=e316] [cursor=pointer]
+          - generic [ref=e318]:
+            - generic [ref=e319]:
+              - generic [ref=e320]: oguild_id
+              - text: "-"
+            - generic [ref=e321]:
+              - generic [ref=e322]: queryParams
+              - generic [ref=e323]: "{ \"guild_name\": \"메이플\", \"world_name\": \"스카니아\" }"
+            - generic [ref=e324]:
+              - generic [ref=e325]: character_names
+              - text: "-"

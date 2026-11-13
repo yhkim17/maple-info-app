@@ -1,0 +1,119 @@
+- generic [ref=e23]:
+  - banner [ref=e24]:
+    - generic [ref=e26]:
+      - generic [ref=e27] [cursor=pointer]:
+        - generic [ref=e28]: 🍁
+        - generic [ref=e29]: 메이플 인포
+      - navigation "메인 메뉴" [ref=e30]:
+        - button "👤 캐릭터 정보 조회" [ref=e31] [cursor=pointer]:
+          - generic [ref=e32]: 👤
+          - text: 캐릭터 정보 조회
+        - button "🛡️ 유니온 정보 조회" [ref=e33] [cursor=pointer]:
+          - generic [ref=e34]: 🛡️
+          - text: 유니온 정보 조회
+        - button "🏰 길드 정보 조회" [ref=e35] [cursor=pointer]:
+          - generic [ref=e36]: 🏰
+          - text: 길드 정보 조회
+        - button "⚔️ 연무장 정보 조회" [ref=e37] [cursor=pointer]:
+          - generic [ref=e38]: ⚔️
+          - text: 연무장 정보 조회
+        - button "🎲 확률 정보 조회" [ref=e39] [cursor=pointer]:
+          - generic [ref=e40]: 🎲
+          - text: 확률 정보 조회
+        - button "📅 스케줄러 정보 조회" [ref=e41] [cursor=pointer]:
+          - generic [ref=e42]: 📅
+          - text: 스케줄러 정보 조회
+        - button "🏆 랭킹 정보 조회" [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]: 🏆
+          - text: 랭킹 정보 조회
+        - button "📢 공지 정보 조회" [active] [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]: 📢
+          - text: 공지 정보 조회
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - generic [ref=e49]: "조회 중:"
+          - generic [ref=e50]: ColdZone
+        - button "캐릭터 변경" [ref=e51] [cursor=pointer]
+  - generic [ref=e52]:
+    - complementary [ref=e53]:
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - generic [ref=e57]: 📢
+            - heading "공지 정보 조회" [level=3] [ref=e1104]
+          - generic [ref=e59]: 4개 API
+        - paragraph [ref=e60]: 공지사항, 업데이트, 이벤트, 캐시샵 공지를 조회합니다.
+        - textbox "API 검색 (명칭, endpoint)" [ref=e62]
+      - generic [ref=e63]:
+        - button "공지사항 목록 공지 GET /notice" [ref=e1105] [cursor=pointer]:
+          - generic [ref=e1106]:
+            - generic [ref=e1107]: 공지사항 목록
+            - generic [ref=e1108]:
+              - generic [ref=e1109]: 공지
+              - generic [ref=e1110]: GET
+          - generic [ref=e1111]: /notice
+        - button "업데이트 공지 업데이트 GET /notice/update" [ref=e1112] [cursor=pointer]:
+          - generic [ref=e1113]:
+            - generic [ref=e1114]: 업데이트 공지
+            - generic [ref=e1115]:
+              - generic [ref=e1116]: 업데이트
+              - generic [ref=e1117]: GET
+          - generic [ref=e1118]: /notice/update
+        - button "진행 중인 이벤트 공지 이벤트 GET /notice/event" [ref=e1119] [cursor=pointer]:
+          - generic [ref=e1120]:
+            - generic [ref=e1121]: 진행 중인 이벤트 공지
+            - generic [ref=e1122]:
+              - generic [ref=e1123]: 이벤트
+              - generic [ref=e1124]: GET
+          - generic [ref=e1125]: /notice/event
+        - button "캐시샵 공지 캐시샵 GET /notice/cashshop" [ref=e1126] [cursor=pointer]:
+          - generic [ref=e1127]:
+            - generic [ref=e1128]: 캐시샵 공지
+            - generic [ref=e1129]:
+              - generic [ref=e1130]: 캐시샵
+              - generic [ref=e1131]: GET
+          - generic [ref=e1132]: /notice/cashshop
+      - generic [ref=e190]:
+        - generic [ref=e191]: NEXON Open API v1
+        - generic [ref=e192]: 200 OK
+    - main [ref=e193]:
+      - generic [ref=e194]:
+        - generic [ref=e195]:
+          - generic [ref=e196]: 📢 공지 정보 조회
+          - generic [ref=e197]: /
+          - generic [ref=e198]: 공지사항 목록
+          - generic [ref=e199]: 공지
+        - generic [ref=e201]:
+          - heading "공지사항 목록 GET" [level=2] [ref=e1133]:
+            - generic [ref=e203]: 공지사항 목록
+            - generic [ref=e204]: GET
+          - paragraph [ref=e205]: 메이플스토리 공식 주요 공지사항 목록 및 상세 링크를 조회합니다.
+      - generic [ref=e206]:
+        - generic [ref=e207]:
+          - generic [ref=e208]:
+            - generic [ref=e209]:
+              - generic [ref=e210]: GET
+              - generic [ref=e211]: /maplestory/v1/
+              - generic [ref=e212]: notice
+            - generic [ref=e213]: x-nxopen-api-key 연동
+          - button "🚀 API 호출 / 새로고침" [ref=e219] [cursor=pointer]:
+            - generic [ref=e220]: 🚀
+            - generic [ref=e221]: API 호출 / 새로고침
+        - generic [ref=e222]:
+          - generic [ref=e223]:
+            - generic [ref=e1134]:
+              - button "🎨 시각화 뷰 (Visual)" [ref=e1135] [cursor=pointer]
+              - 'button "{} JSON 원본 (Raw)" [ref=e1136] [cursor=pointer]'
+            - generic [ref=e1137]:
+              - button "📋 JSON 복사" [ref=e1138] [cursor=pointer]
+              - button "🔄" [ref=e1140] [cursor=pointer]
+          - generic [ref=e1142]:
+            - generic [ref=e1143]:
+              - generic [ref=e1144]: notice
+              - generic [ref=e1145]: "[ { \"title\": \"[오픈] 테스트월드 운영기간 안내(2026.11.12~2026.11.19)\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150450\", \"notice_id\": 150450, \"date\": \"2026-11-12T16:55+09:00\" }, { \"title\": \"11/12(목) 넥슨 정기점검 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150428\", \"notice_id\": 150428, \"date\": \"2026-11-10T15:44+09:00\" }, { \"title\": \"11/6(금) 버그악용/불법프로그램 신고 보상 지급 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150418\", \"notice_id\": 150418, \"date\": \"2026-11-06T14:30+09:00\" }, { \"title\": \"11/5(목) 운영정책 위반 단속 결과 및 클린 캠페인 결과 발표\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150413\", \"notice_id\": 150413, \"date\": \"2026-11-05T14:24+09:00\" }, { \"title\": \"Tver.1.2.207 우수테스터 발표 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150412\", \"notice_id\": 150412, \"date\": \"2026-11-05T13:35+09:00\" }, { \"title\": \"[점검완료] 11/2(월) 전체 월드 채널 점검 (18:50~19:40)\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150389\", \"notice_id\": 150389, \"date\": \"2026-11-02T18:20+09:00\" }, { \"title\": \"(완료) 탐험 코인샵 내 펫장비 교환권 판매 임시 중단 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150385\", \"notice_id\": 150385, \"date\": \"2026-10-30T16:22+09:00\" }, { \"title\": \"(수정)10/29(목) 넥슨 정기점검 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150368\", \"notice_id\": 150368, \"date\": \"2026-10-28T10:01+09:00\" }, { \"title\": \"[점검완료] 10/27(화) 메이플스토리 홈페이지 점검 안내(09:00~09:30)\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150355\", \"notice_id\": 150355, \"date\": \"2026-10-26T10:14+09:00\" }, { \"title\": \"[패치완료] 10/23(금) ver1.2.420 마이너버전(3) 패치 (13:29 적용)\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150352\", \"notice_id\": 150352, \"date\": \"2026-10-23T13:30+09:00\" }, { \"title\": \"넥슨 히어로 2026년 기부 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150350\", \"notice_id\": 150350, \"date\": \"2026-10-23T10:00+09:00\" }, { \"title\": \"[패치완료] 10/22(목) ver1.2.420 마이너버전(2) 패치 (15:52 적용)\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150347\", \"notice_id\": 150347, \"date\": \"2026-10-22T15:54+09:00\" }, { \"title\": \"(추가) 일부 월드로의 월드 리프 조기 종료 사전 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150346\", \"notice_id\": 150346, \"date\": \"2026-10-22T14:30+09:00\" }, { \"title\": \"월드 리프 지연 현상 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150343\", \"notice_id\": 150343, \"date\": \"2026-10-22T10:36+09:00\" }, { \"title\": \"[패치완료] 10/22(목) ver1.2.420 클라이언트 패치(4:00~10:00)\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150333\", \"notice_id\": 150333, \"date\": \"2026-10-20T19:09+09:00\" }, { \"title\": \"(수정) 10/22(목) 넥슨 정기점검 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150328\", \"notice_id\": 150328, \"date\": \"2026-10-20T17:10+09:00\" }, { \"title\": \"11/19(목) 메이플스토리 운영정책 변경 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150317\", \"notice_id\": 150317, \"date\": \"2026-10-19T14:46+09:00\" }, { \"title\": \"10/16(금) 버그악용/불법프로그램 신고 보상 지급 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150312\", \"notice_id\": 150312, \"date\": \"2026-10-16T11:03+09:00\" }, { \"title\": \"[종료] 테스트월드 운영기간 안내(2026.10.15~2026.10.22)\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150305\", \"notice_id\": 150305, \"date\": \"2026-10-15T15:55+09:00\" }, { \"title\": \"10/15(목) 넥슨 정기점검 안내\", \"url\": \"https://maplestory.nexon.com/News/Notice/Notice/150284\", \"notice_id\": 150284, \"date\": \"2026-10-13T16:41+09:00\" } ]"
+            - generic [ref=e1146]:
+              - generic [ref=e1147]: queryParams
+              - text: "-"
+            - generic [ref=e1148]:
+              - generic [ref=e1149]: character_names
+              - text: "-"

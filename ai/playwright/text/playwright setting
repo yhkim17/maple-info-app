@@ -1,0 +1,38 @@
+# 1. 전역으로 Playwright 설치 (어느 프로젝트에서든 바로 실행 가능)
+npm install -g playwright @playwright/mcp
+
+# 2. Playwright 전용 Chromium 브라우저 다운로드
+npx playwright install chromium
+
+확인 기준: 설치가 완료되면 터미널에 브라우저 바이너리 저장 경로(ms-playwright/chromium-...)가 표시됩니다.
+
+참고 (사내 방화벽 이슈 시): 만약 회사 방화벽으로 npx playwright install chromium 다운로드가 차단된다면, 별도 브라우저를 받지 않고 PC에 이미 설치된 기본 크롬을 그대로 쓰도록 4단계 설정에 "--browser", "chrome" 옵션만 추가하면 해결됩니다.
+
+# 1. 작업할 프로젝트 폴더로 이동 후 캡처 저장 폴더 생성
+mkdir -p ./manual_images
+
+# 2. PPT 자동 생성용 Python 라이브러리 설치
+pip install python-pptx
+
+# C:\Users\kimyu\.gemini\config\mcp_config.json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@playwright/mcp@latest",
+        "--output-dir",
+        "./manual_images",
+        "--viewport-size",
+        "1280x720"
+      ]
+    }
+  }
+}
+
+(만약 2단계에서 전용 브라우저 다운로드가 막혀 PC에 깔린 일반 크롬을 써야 한다면 args 배열 안에 "--browser", "chrome" 두 줄을 추가해 주세요.)
+
+# 파이썬 설치는 3.12.10 버전 설치 https://www.python.org/downloads/windows/

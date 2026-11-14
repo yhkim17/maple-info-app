@@ -119,11 +119,21 @@ export interface AbilityOption {
   ability_value: string;
 }
 
+export interface AbilityPreset {
+  ability_preset_grade?: string;
+  ability_grade?: string;
+  ability_info: AbilityOption[];
+}
+
 export interface CharacterAbilityInfo {
   date: string;
   ability_grade: string;
   ability_info: AbilityOption[];
   remain_fame: number;
+  preset_no?: number | string | null;
+  ability_preset_1?: AbilityPreset | null;
+  ability_preset_2?: AbilityPreset | null;
+  ability_preset_3?: AbilityPreset | null;
 }
 
 export interface SymbolItem {

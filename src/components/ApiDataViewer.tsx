@@ -10,6 +10,7 @@ import type {
   UserUnionInfo,
   CharacterPropensityInfo,
   CharacterAbilityInfo,
+  AbilityPreset,
   CharacterSymbolInfo,
   CharacterHyperStatInfo,
   HyperStatPreset,
@@ -219,7 +220,13 @@ function VisualApiRenderer({ endpoint, data }: { endpoint: string; data: unknown
     return <PropensityVisual info={data as CharacterPropensityInfo} />;
   }
   if (endpoint === 'character/ability') {
-    return <AbilityVisual info={data as CharacterAbilityInfo} />;
+    const abilityInfo = data as CharacterAbilityInfo;
+    return (
+      <AbilityVisual
+        key={`${abilityInfo?.date}-${abilityInfo?.preset_no ?? ''}`}
+        info={abilityInfo}
+      />
+    );
   }
   if (endpoint === 'character/symbol-equipment') {
     return <SymbolVisual info={data as CharacterSymbolInfo} />;
@@ -1042,7 +1049,39 @@ function PropensityVisual({ info }: { info: CharacterPropensityInfo }) {
 
 // 9. 어빌리티 뷰
 function AbilityVisual({ info }: { info: CharacterAbilityInfo }) {
-  if (!info || !info.ability_info) {
+  const activePresetNo = info?.preset_no != null ? String(info.preset_no) : undefined;
+  // 기본 프리셋은 현재 인게임에 설정된 프리셋(preset_no) 또는 '1'로 초기화
+  const [selectedPreset, setSelectedPreset] = useState<string>(() => activePresetNo || '1');
+
+  const presetList = ['1', '2', '3'] as const;
+
+  const currentPresetData = useMemo(() => {
+    if (!info) return { grade: '미정', lines: [] };
+    const presetKey = `ability_preset_${selectedPreset}` as keyof CharacterAbilityInfo;
+    const presetObj = info[presetKey] as AbilityPreset | null | undefined;
+    if (presetObj) {
+      return {
+        grade: presetObj.ability_preset_grade || presetObj.ability_grade || '미정',
+        lines: presetObj.ability_info ?? [],
+      };
+    }
+    // 프리셋 객체가 없는 경우(인게임 활성 프리셋이거나 전체 프리셋 정보가 없을 때 fallback)
+    if (
+      activePresetNo === selectedPreset ||
+      (!info.ability_preset_1 && !info.ability_preset_2 && !info.ability_preset_3)
+    ) {
+      return {
+        grade: info.ability_grade || '미정',
+        lines: info.ability_info ?? [],
+      };
+    }
+    return {
+      grade: '미설정',
+      lines: [],
+    };
+  }, [info, selectedPreset, activePresetNo]);
+
+  if (!info || (!info.ability_info && !info.ability_preset_1)) {
     return <GenericDataVisual data={info} />;
   }
 
@@ -1053,45 +1092,126 @@ function AbilityVisual({ info }: { info: CharacterAbilityInfo }) {
     '레어': 'border-sky-500/50 bg-sky-500/10 text-sky-300',
   };
 
-  const gradeStyle = gradeStyles[info.ability_grade] ?? 'border-slate-700 bg-slate-900 text-slate-300';
+  const currentGradeStyle =
+    gradeStyles[currentPresetData.grade] ?? 'border-slate-700 bg-slate-900 text-slate-300';
 
   return (
     <div className="space-y-4">
+      {/* 프리셋 선택 탭 및 상태 요약 영역 */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+        <div>
+          <div className="text-[11px] text-slate-400 font-medium mb-1.5">어빌리티 프리셋 선택</div>
+          <div className="flex flex-wrap items-center gap-2">
+            {presetList.map((presetNo) => {
+              const isSelected = selectedPreset === presetNo;
+              const isCurrentApplied = activePresetNo === presetNo;
+
+              return (
+                <button
+                  key={presetNo}
+                  type="button"
+                  onClick={() => setSelectedPreset(presetNo)}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold shadow-md shadow-amber-500/20'
+                      : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <span>프리셋 {presetNo}</span>
+                  {isCurrentApplied && (
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                        isSelected
+                          ? 'bg-slate-950 text-amber-300 border border-amber-300/30'
+                          : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                      }`}
+                    >
+                      현재 적용
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 프리셋 메타 정보 요약 */}
+        <div className="flex flex-wrap items-center gap-2 sm:self-end text-xs">
+          {activePresetNo && (
+            <div className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300 flex items-center gap-1.5">
+              <span className="text-slate-500">인게임 적용:</span>
+              <span className="font-bold text-amber-400 font-mono">프리셋 {activePresetNo}번</span>
+            </div>
+          )}
+          {info.remain_fame !== undefined && (
+            <div className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300 flex items-center gap-1.5">
+              <span className="text-slate-500">보유 명성치:</span>
+              <span className="font-mono font-semibold text-amber-400">
+                {info.remain_fame.toLocaleString()} pt
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 선택된 프리셋의 등급 요약 카드 */}
       <div className="flex items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800">
         <div>
-          <span className="text-xs text-slate-500 block mb-1">어빌리티 등급</span>
-          <span className={`text-base font-bold px-3 py-1 rounded-lg border ${gradeStyle}`}>
-            {info.ability_grade ?? '미정'}
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs text-slate-500">프리셋 {selectedPreset} 어빌리티 등급</span>
+            {selectedPreset === activePresetNo && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 font-medium">
+                인게임 활성
+              </span>
+            )}
+          </div>
+          <span className={`text-base font-bold px-3 py-1 rounded-lg border inline-block ${currentGradeStyle}`}>
+            {currentPresetData.grade}
           </span>
         </div>
         <div className="text-right">
-          <span className="text-xs text-slate-500 block mb-1">보유 명성치</span>
-          <span className="text-sm font-mono font-bold text-amber-400">
-            {info.remain_fame?.toLocaleString() ?? 0} AP
+          <span className="text-xs text-slate-500 block mb-1">적용 옵션 수</span>
+          <span className="text-sm font-mono font-bold text-slate-200">
+            {currentPresetData.lines.length}개 라인
           </span>
         </div>
       </div>
 
-      <div className="space-y-2">
-        <h5 className="text-xs font-semibold text-slate-400">어빌리티 옵션 줄 (총 {info.ability_info.length}줄)</h5>
-        {info.ability_info.map((line, idx) => {
-          const lineStyle = gradeStyles[line.ability_grade] ?? 'border-slate-800 bg-slate-950 text-slate-300';
-          return (
-            <div
-              key={idx}
-              className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex items-center justify-between gap-3 text-xs"
-            >
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-slate-500 font-bold">#{line.ability_no}</span>
-                <span className={`px-2 py-0.5 rounded text-[11px] font-semibold border ${lineStyle}`}>
-                  {line.ability_grade}
-                </span>
-                <span className="font-medium text-slate-100">{line.ability_value}</span>
+      {/* 선택된 프리셋의 어빌리티 옵션 줄 목록 */}
+      {currentPresetData.lines.length === 0 ? (
+        <div className="bg-slate-950 p-10 rounded-xl border border-slate-800 text-center space-y-1">
+          <p className="text-sm font-semibold text-slate-300">
+            프리셋 {selectedPreset}번에 설정된 어빌리티가 없습니다.
+          </p>
+          <p className="text-xs text-slate-500">
+            인게임에서 어빌리티를 재설정하거나 다른 프리셋을 선택해 보세요.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <h5 className="text-xs font-semibold text-slate-400">
+            어빌리티 옵션 줄 (총 {currentPresetData.lines.length}줄)
+          </h5>
+          {currentPresetData.lines.map((line, idx) => {
+            const lineStyle =
+              gradeStyles[line.ability_grade] ?? 'border-slate-800 bg-slate-950 text-slate-300';
+            return (
+              <div
+                key={idx}
+                className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex items-center justify-between gap-3 text-xs hover:border-slate-700/80 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-slate-500 font-bold">#{line.ability_no}</span>
+                  <span className={`px-2 py-0.5 rounded text-[11px] font-semibold border ${lineStyle}`}>
+                    {line.ability_grade}
+                  </span>
+                  <span className="font-medium text-slate-100">{line.ability_value}</span>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

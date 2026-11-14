@@ -49,3 +49,20 @@ AI 에이전트를 통해 수행한 모든 작업은 작업 단위별로 마크�
 * **기술 스택**: React 19, TypeScript, Vite, Tailwind CSS v4, TanStack Query (v5), Axios, Oxlint
 * **API 호출**: `src/api/index.ts`에 정의된 Axios 인스턴스를 활용하며, 키 관리는 `.env`의 `VITE_NEXON_API_KEY`를 사용합니다.
 * **언어 및 커뮤니케이션**: 모든 설명, 커밋 메시지 권장안, 작업 기록 문서는 한국어로 작성합니다.
+
+---
+
+## 3. Playwright MCP 산출물 관리 규칙
+
+Playwright MCP를 활용하여 브라우저 캡처, 스냅샷, 로그 및 관련 문서를 생성할 때는 년월별로 체계적으로 관리해야 합니다.
+
+### 3-1. 저장 경로 구조 (`YYYY-MM` 형식 필수)
+모든 산출물은 `ai/playwright/<유형>/YYYY-MM/` 하위에 생성하거나 이동하여 관리합니다.
+* **이미지 (스크린샷)**: `ai/playwright/img/YYYY-MM/` (예: `ai/playwright/img/2026-11/`)
+* **텍스트 (스냅샷 및 콘솔 로그)**: `ai/playwright/text/YYYY-MM/` (예: `ai/playwright/text/2026-11/`)
+* **PPT 및 문서 산출물**: `ai/playwright/ppt/YYYY-MM/` (예: `ai/playwright/ppt/2026-11/`)
+
+### 3-2. 생성 및 관리 원칙
+* Playwright MCP 사용 시 생성되는 이미지(`.png`), 스냅샷(`.yml`), 로그(`.log`) 파일은 현재 작업 기준의 년월(`YYYY-MM`) 폴더를 확인/생성한 후 해당 디렉토리 내에 저장합니다.
+* 도구 동작 상 루트나 임시 폴더에 파일이 생성된 경우, 작업 완료 즉시 위 규칙에 맞는 `YYYY-MM` 하위 경로로 분류 및 이동시킵니다.
+

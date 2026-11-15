@@ -1,0 +1,19 @@
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - generic [ref=e6]: 🍁
+    - heading "메이플 캐릭터 검색" [level=1] [ref=e7]
+    - paragraph [ref=e8]: 조회할 메이플스토리 캐릭터명을 입력해주세요.
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - generic [ref=e11]: 캐릭터명
+      - textbox "캐릭터명" [active] [ref=e13]:
+        - /placeholder: "예: 타락파워전사"
+    - button "확인" [ref=e14] [cursor=pointer]
+  - generic [ref=e15]:
+    - paragraph [ref=e16]: 실제 존재하는 예시 닉네임으로 테스트
+    - generic [ref=e17]:
+      - button "ColdZone" [ref=e18] [cursor=pointer]
+      - button "롤핵고수" [ref=e19] [cursor=pointer]
+      - button "없카" [ref=e20] [cursor=pointer]
+      - button "꾹꾹코스터" [ref=e21] [cursor=pointer]
+      - button "카스테라망고" [ref=e22] [cursor=pointer]

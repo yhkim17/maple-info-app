@@ -12,6 +12,14 @@ interface TabContentProps {
   onOpenMobileSidebar: () => void;
 }
 
+function getTodayString() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function TabContent({
   activeMenu,
   activeSubApi,
@@ -20,14 +28,6 @@ export function TabContent({
   onOpenMobileSidebar,
 }: TabContentProps) {
   const currentMenu = MENU_ITEMS.find((item) => item.id === activeMenu);
-
-  const getTodayString = () => {
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
 
   // 파라미터 상태 관리
   const [selectedDate, setSelectedDate] = useState('');
@@ -125,55 +125,53 @@ export function TabContent({
         </button>
       </div>
 
-      {/* 헤더 섹션 */}
-      <div className="mb-6 pb-5 border-b border-slate-800">
-        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 mb-2">
-          <span>
-            {currentMenu?.icon} {currentMenu?.label}
-          </span>
-          <span>/</span>
-          <span className="text-amber-400 font-medium">{activeSubApi?.name}</span>
-          {activeSubApi?.tag && (
-            <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">
-              {activeSubApi.tag}
+      {/* 헤더 섹션 & 상단 우측 API 컨트롤러 */}
+      <div className="mb-6 pb-5 border-b border-slate-800 flex flex-col xl:flex-row xl:items-start justify-between gap-4">
+        {/* 좌측: 타이틀 및 안내 */}
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 mb-2">
+            <span>
+              {currentMenu?.icon} {currentMenu?.label}
             </span>
-          )}
-        </div>
-
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-              <span>{activeSubApi?.name ?? currentMenu?.label}</span>
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                {activeSubApi?.method ?? 'GET'}
+            <span>/</span>
+            <span className="text-amber-400 font-medium">{activeSubApi?.name}</span>
+            {activeSubApi?.tag && (
+              <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">
+                {activeSubApi.tag}
               </span>
-            </h2>
-            <p className="text-sm text-slate-400 mt-1 leading-relaxed">
-              {activeSubApi?.description ?? currentMenu?.desc}
-            </p>
+            )}
           </div>
-        </div>
-      </div>
 
-      <div className="space-y-6">
-        {/* 요청 파라미터 컨트롤 및 URL 바 */}
-        <div className="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
-            <div className="flex items-center gap-2 truncate">
+          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+            <span>{activeSubApi?.name ?? currentMenu?.label}</span>
+            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              {activeSubApi?.method ?? 'GET'}
+            </span>
+          </h2>
+          <p className="text-sm text-slate-400 mt-1 leading-relaxed max-w-xl">
+            {activeSubApi?.description ?? currentMenu?.desc}
+          </p>
+        </div>
+
+        {/* 우측 상단: 엔드포인트 URL & 파라미터 컨트롤 */}
+        <div className="flex flex-col items-start xl:items-end gap-2 shrink-0 w-full xl:w-auto">
+          {/* 엔드포인트 URL 바 */}
+          <div className="flex items-center gap-2 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800 font-mono text-xs w-full xl:w-auto justify-between xl:justify-end shadow-xs">
+            <div className="flex items-center gap-1.5 truncate">
               <span className="text-emerald-400 font-bold">{activeSubApi?.method ?? 'GET'}</span>
               <span className="text-slate-500">/maplestory/v1/</span>
               <span className="text-amber-400 font-semibold">{activeSubApi?.endpoint}</span>
             </div>
-            <span className="shrink-0 text-[10px] text-slate-400 bg-slate-800/80 px-2 py-1 rounded">
+            <span className="shrink-0 text-[10px] text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/60 ml-1">
               x-nxopen-api-key 연동
             </span>
           </div>
 
-          {/* 파라미터 조절 폼 (옵션이 필요한 경우 노출) */}
-          <div className="flex flex-wrap items-center gap-3 text-xs pt-1">
+          {/* 파라미터 조절 및 새로고침 버튼 */}
+          <div className="flex flex-wrap items-center gap-2 text-xs w-full xl:w-auto justify-start xl:justify-end">
             {/* 스케줄러 정보 조회 시 다중 캐릭터 입력 필드 (scheduler/character-state 전용) */}
             {activeSubApi?.endpoint === 'scheduler/character-state' && (
-              <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 flex-1 min-w-[320px]">
+              <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 flex-1 sm:flex-initial min-w-[280px]">
                 <span className="text-amber-400 font-semibold text-[11px] whitespace-nowrap">
                   👥 다중 캐릭터:
                 </span>
@@ -187,13 +185,13 @@ export function TabContent({
                       setAppliedMultiCharNames(multiCharNamesInput.trim() || characterName);
                     }
                   }}
-                  placeholder="예: ColdZone, BishopZone (엔터 또는 적용 클릭)"
+                  placeholder="예: ColdZone, BishopZone"
                   className="bg-transparent text-slate-100 text-xs w-full focus:outline-hidden font-mono"
                 />
                 <button
                   type="button"
                   onClick={() => setAppliedMultiCharNames(multiCharNamesInput.trim() || characterName)}
-                  className="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 font-bold rounded text-[11px] whitespace-nowrap transition-colors cursor-pointer border border-amber-500/30"
+                  className="px-2 py-0.5 bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 font-bold rounded text-[10px] whitespace-nowrap transition-colors cursor-pointer border border-amber-500/30"
                 >
                   적용
                 </button>
@@ -202,8 +200,8 @@ export function TabContent({
 
             {/* date 파라미터가 있을 때 */}
             {activeSubApi?.params.some((p) => p.name === 'date') && (
-              <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
-                <span className="text-slate-400 text-[11px]">기준일(date):</span>
+              <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800">
+                <span className="text-slate-400 text-[11px] whitespace-nowrap">기준일(date):</span>
                 <input
                   type="date"
                   value={selectedDate}
@@ -212,14 +210,14 @@ export function TabContent({
                   className="bg-transparent text-slate-200 text-xs focus:outline-hidden"
                 />
                 {!selectedDate ? (
-                  <span className="text-[10px] text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 font-mono">
+                  <span className="text-[10px] text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 font-mono whitespace-nowrap">
                     {activeSubApi?.endpoint.startsWith('history/') ? '오늘 디폴트 적용' : '최신 데이터 자동 조회'}
                   </span>
                 ) : (
                   <button
                     type="button"
                     onClick={() => setSelectedDate('')}
-                    className="text-slate-500 hover:text-slate-300 text-[10px]"
+                    className="text-slate-500 hover:text-slate-300 text-[10px] cursor-pointer"
                   >
                     초기화
                   </button>
@@ -229,8 +227,8 @@ export function TabContent({
 
             {/* 스킬 차수 선택 (character/skill인 경우) */}
             {activeSubApi?.endpoint === 'character/skill' && (
-              <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
-                <span className="text-slate-400 text-[11px]">스킬 차수:</span>
+              <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800">
+                <span className="text-slate-400 text-[11px] whitespace-nowrap">스킬 차수:</span>
                 <select
                   value={skillGrade}
                   onChange={(e) => setSkillGrade(e.target.value)}
@@ -249,9 +247,9 @@ export function TabContent({
 
             {/* 길드 파라미터 */}
             {activeSubApi?.endpoint === 'guild/id' && (
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800">
-                  <span className="text-slate-400 text-[11px]">길드명:</span>
+                  <span className="text-slate-400 text-[11px] whitespace-nowrap">길드명:</span>
                   <input
                     type="text"
                     value={guildName}
@@ -260,7 +258,7 @@ export function TabContent({
                   />
                 </div>
                 <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800">
-                  <span className="text-slate-400 text-[11px]">월드명:</span>
+                  <span className="text-slate-400 text-[11px] whitespace-nowrap">월드명:</span>
                   <input
                     type="text"
                     value={worldName}
@@ -280,25 +278,25 @@ export function TabContent({
                 }
                 refetch();
               }}
-              className="ml-auto px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition-colors text-xs flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-bold rounded-lg transition-colors text-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shadow-xs"
             >
               <span>🚀</span>
               <span>API 호출 / 새로고침</span>
             </button>
           </div>
         </div>
-
-        {/* API 데이터 뷰어 (시각화 + Raw JSON) */}
-        <ApiDataViewer
-          endpoint={activeSubApi?.endpoint ?? ''}
-          data={enrichedData}
-          isLoading={isLoading}
-          isFetching={isFetching}
-          isError={isError}
-          error={error}
-          onRefetch={() => refetch()}
-        />
       </div>
+
+      {/* API 데이터 뷰어 (시각화 + Raw JSON) */}
+      <ApiDataViewer
+        endpoint={activeSubApi?.endpoint ?? ''}
+        data={enrichedData}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        isError={isError}
+        error={error}
+        onRefetch={() => refetch()}
+      />
     </main>
   );
 }

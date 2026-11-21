@@ -117,21 +117,28 @@ export function CharacterSearch({ onSearch }: CharacterSearchProps) {
 
         {/* 추천/예시 검색어 */}
         <div className="mt-6 pt-4 border-t border-slate-700/60 text-center">
-          <p className="text-xs text-slate-400 mb-2">실제 존재하는 예시 닉네임으로 테스트</p>
-          <div className="flex justify-center gap-2">
-            {['ColdZone', '롤핵고수', '없카', '꾹꾹코스터', '카스테라망고'].map((sample) => (
-              <button
-                key={sample}
-                type="button"
-                disabled={isLoading}
-                onClick={() => {
-                  setCharacterName(sample);
-                  validateAndSearch(sample);
-                }}
-                className="text-xs px-2.5 py-1 bg-slate-700/50 hover:bg-slate-700 disabled:opacity-50 text-slate-300 hover:text-white rounded-lg transition-colors cursor-pointer"
-              >
-                {sample}
-              </button>
+          <p className="text-xs text-slate-400 mb-2.5">실제 존재하는 예시 닉네임으로 테스트</p>
+          <div className="flex flex-col gap-2">
+            {[
+              ['ColdZone', '롤핵고수', '없카', '꾹꾹코스터', '카스테라망고'],
+              ['BishopZone', 'ChIlliumZone', 'ChBeMeZone'],
+            ].map((group, groupIdx) => (
+              <div key={groupIdx} className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
+                {group.map((sample) => (
+                  <button
+                    key={sample}
+                    type="button"
+                    disabled={isLoading}
+                    onClick={() => {
+                      setCharacterName(sample);
+                      validateAndSearch(sample);
+                    }}
+                    className="text-xs px-2.5 py-1 bg-slate-700/50 hover:bg-slate-700 disabled:opacity-50 text-slate-300 hover:text-white rounded-lg transition-colors cursor-pointer whitespace-nowrap"
+                  >
+                    {sample}
+                  </button>
+                ))}
+              </div>
             ))}
           </div>
         </div>

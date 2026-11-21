@@ -555,10 +555,8 @@ function ItemTooltipModal({ item, onClose }: { item: ItemEquipment; onClose: () 
 
   // 스타포스 수치
   const starforceCount = Math.max(0, parseInt(item.starforce || '0', 10) || 0);
-  const hasStarforce =
-    starforceCount > 0 ||
-    item.starforce_scroll_flag === '사용' ||
-    Boolean(item.item_starforce_option && Object.keys(item.item_starforce_option).length > 0);
+  const isAmazingScroll = item.starforce_scroll_flag === '사용';
+  const hasStarforce = starforceCount > 0;
 
   // 주문서 업그레이드 횟수
   const scrollUpgrade = parseInt(item.scroll_upgrade || '0', 10) || 0;
@@ -611,7 +609,7 @@ function ItemTooltipModal({ item, onClose }: { item: ItemEquipment; onClose: () 
                   return isFilled ? (
                     <svg
                       key={starIdx}
-                      className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0"
+                      className={`w-3.5 h-3.5 shrink-0 ${isAmazingScroll ? 'fill-sky-400 text-sky-400' : 'fill-amber-400 text-amber-400'}`}
                       viewBox="0 0 24 24"
                     >
                       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
